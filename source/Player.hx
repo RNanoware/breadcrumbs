@@ -7,7 +7,7 @@ import flixel.FlxSprite;
 
 class Player extends FlxSprite
 {
-    public var speed:Float = 200;
+    public var speed:Float = 150;
 
     private var _drag:Float = 1600;
 
