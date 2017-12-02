@@ -9,6 +9,7 @@ class PlayState extends FlxState
 	// Entities in the game
 	private var _player:Player;
 	private var _grpBread:FlxTypedGroup<Bread>;
+	private var _grpEnemy:FlxTypedGroup<Enemy>;
 
 	private var _addBread:Bool = true;
 
@@ -20,6 +21,10 @@ class PlayState extends FlxState
 		_grpBread = new FlxTypedGroup<Bread>(1);
 		_grpBread.add(new Bread());
 		add(_grpBread);
+
+		_grpEnemy = new FlxTypedGroup<Enemy>();
+		_grpEnemy.add(new Enemy(200, 200));
+		add(_grpEnemy);
 
 		super.create();
 	}
