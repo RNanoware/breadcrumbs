@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.math.FlxPoint;
 
 class PlayState extends FlxState
 {
@@ -44,6 +45,8 @@ class PlayState extends FlxState
 			_player.dropCrumb = false;
 			_grpCrumb.add(new Crumb(_player.x, _player.y));
 		}
+
+		_grpCrumb.forEachAlive(setClosestCrumb);
 	}
 
 	private function playerTouchBread(p:Player, b:Bread)
@@ -51,6 +54,33 @@ class PlayState extends FlxState
 		if (p.alive && p.exists && b.alive && b.exists)
 		{
 			b.eat();
+		}
+	}
+
+	private function setClosestCrumb(thisC:Crumb):Void
+	{
+		if (_grpCrumb.length > 1)
+		{
+			var _closestDist:Float = Math.POSITIVE_INFINITY;
+			var _closestPoint:FlxPoint = FlxPoint.get();
+			var _thisPoint:FlxPoint = thisC.getMidpoint();
+			var _thatPoint:FlxPoint;
+			for (thatC in _grpCrumb)
+			{
+				if (thisC != thatC)
+				{
+					_thatPoint = thatC.getMidpoint();
+					var _dist = _thisPoint.distanceTo(_thatPoint);
+					if (_closestDist > _dist)
+					{
+						_closestDist = _dist;
+						_closestPoint.copyFrom(_thatPoint);
+					}
+				}
+			}
+			thisC.destPos.copyFrom(_closestPoint);
+			_closestPoint.put();
+			thisC.hasDest = true;
 		}
 	}
 }
