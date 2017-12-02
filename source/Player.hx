@@ -8,8 +8,10 @@ import flixel.FlxSprite;
 class Player extends FlxSprite
 {
     public var speed:Float = 150;
+    public var dropCrumb:Bool = false;
 
     private var _drag:Float = 1600;
+    private var _distSinceCrumb:Float = 0;
 
     public function new(?X:Float=0, ?Y:Float=0)
     {
@@ -21,6 +23,7 @@ class Player extends FlxSprite
     override public function update(elapsed:Float):Void
     {
         movement();
+        checkCrumbDrop(elapsed);
         super.update(elapsed);
     }
 
@@ -64,6 +67,16 @@ class Player extends FlxSprite
             velocity.x = speed;
             velocity.y = 0;
             velocity.rotate(FlxPoint.weak(0, 0), angle);
+        }
+    }
+
+    private function checkCrumbDrop(elapsed:Float):Void
+    {
+        _distSinceCrumb += elapsed * velocity.distanceTo(FlxPoint.weak(0, 0));
+        if (_distSinceCrumb > 100)
+        {
+            _distSinceCrumb = 0;
+            dropCrumb = true;
         }
     }
 }

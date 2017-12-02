@@ -10,6 +10,7 @@ class PlayState extends FlxState
 	private var _player:Player;
 	private var _grpBread:FlxTypedGroup<Bread>;
 	private var _grpEnemy:FlxTypedGroup<Enemy>;
+	private var _grpCrumb:FlxTypedGroup<Crumb>;
 
 	private var _addBread:Bool = true;
 
@@ -26,6 +27,9 @@ class PlayState extends FlxState
 		_grpEnemy.add(new Enemy(200, 200));
 		add(_grpEnemy);
 
+		_grpCrumb = new FlxTypedGroup<Crumb>();
+		add(_grpCrumb);
+
 		super.create();
 	}
 
@@ -34,6 +38,12 @@ class PlayState extends FlxState
 		super.update(elapsed);
 
 		FlxG.overlap(_player, _grpBread, playerTouchBread);
+
+		if (_player.dropCrumb)
+		{
+			_player.dropCrumb = false;
+			_grpCrumb.add(new Crumb(_player.x, _player.y));
+		}
 	}
 
 	private function playerTouchBread(p:Player, b:Bread)
