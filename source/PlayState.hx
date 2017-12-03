@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
@@ -14,6 +15,8 @@ class PlayState extends FlxState
 	private var _grpCrumb:FlxTypedGroup<Crumb>;
 	private var _maze:Maze;
 	private var _hud:HUD;
+
+	private var _ending:Bool = false;
 
 	override public function create():Void
 	{
@@ -43,8 +46,12 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
+		if (_ending)
+			return;
+
 		FlxG.overlap(_player, _grpBread, playerTouchBread);
 		FlxG.overlap(_grpCrumb, _grpCrumb, crumbCollide);
+		FlxG.overlap(_player, _grpEnemy, playerTouchEnemy);
 
 		FlxG.collide(_player, _maze);
 		FlxG.collide(_grpEnemy, _maze);
@@ -67,6 +74,15 @@ class PlayState extends FlxState
 			b.eat();
 			_hud.updateHUD(++p.breadEaten);
 		}
+	}
+
+	private function playerTouchEnemy(p:Player, e:Enemy)
+	{
+		_ending = true;
+		FlxG.camera.fade(FlxColor.BLACK, .33, false, function()
+		{
+			FlxG.switchState(new GameOverState(_player.breadEaten));
+		});
 	}
 
 	private function crumbCollide(c1:Crumb, c2:Crumb)
