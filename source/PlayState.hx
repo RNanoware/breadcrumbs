@@ -103,11 +103,14 @@ class PlayState extends FlxState
 				if (thisC != thatC)
 				{
 					_thatPoint = thatC.getMidpoint();
-					var _dist = _thisPoint.distanceTo(_thatPoint);
-					if (_closestDist > _dist)
+					if (_tileWall.ray(_thisPoint, _thatPoint)) // Return false if wall is hit
 					{
-						_closestDist = _dist;
-						_closestCrumb = thatC;
+						var _dist = _thisPoint.distanceTo(_thatPoint);
+						if (_closestDist > _dist)
+						{
+							_closestDist = _dist;
+							_closestCrumb = thatC;
+						}
 					}
 				}
 			});

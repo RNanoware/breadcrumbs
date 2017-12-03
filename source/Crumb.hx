@@ -38,6 +38,8 @@ class Crumb extends FlxSprite
                 velocity.y = -Math.min(_jumpDist, _mp.distanceTo(_destMp));
                 velocity.rotate(FlxPoint.weak(), _mp.angleBetween(_destMp));
             }
+            else
+                velocity.x = velocity.y = 0;
             _idleTmr = FlxG.random.float(0, 2);
         }
         _idleTmr -= elapsed;
