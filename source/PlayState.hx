@@ -1,12 +1,9 @@
 package;
 
-import flixel.util.FlxColor;
-import flixel.graphics.FlxGraphic;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
-import flixel.tile.FlxTilemap;
 
 class PlayState extends FlxState
 {
@@ -15,28 +12,18 @@ class PlayState extends FlxState
 	private var _grpBread:FlxTypedGroup<Bread>;
 	private var _grpEnemy:FlxTypedGroup<Enemy>;
 	private var _grpCrumb:FlxTypedGroup<Crumb>;
-	private var _tileWall:FlxTilemap;
-
-	private var _mazeData:Array<Array<Int>> = [
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-		[1, 0, 0, 1, 1, 1, 0, 0, 0, 1],
-		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-		[1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-	];
+	private var _maze:Maze;
 
 	override public function create():Void
 	{
 		_player = new Player(20, 20);
 		add(_player);
 
+		_maze = new Maze(10, 10);
+		add(_maze);
+
 		_grpBread = new FlxTypedGroup<Bread>(1);
-		_grpBread.add(new Bread());
+		_grpBread.add(new Bread(_maze.getRandEmpty));
 		add(_grpBread);
 
 		_grpEnemy = new FlxTypedGroup<Enemy>();
@@ -44,10 +31,6 @@ class PlayState extends FlxState
 
 		_grpCrumb = new FlxTypedGroup<Crumb>();
 		add(_grpCrumb);
-
-		_tileWall = new FlxTilemap();
-		_tileWall.loadMapFrom2DArray(_mazeData, FlxGraphic.fromRectangle(32, 16, FlxColor.GRAY));
-		add(_tileWall);
 
 		super.create();
 	}
@@ -59,9 +42,9 @@ class PlayState extends FlxState
 		FlxG.overlap(_player, _grpBread, playerTouchBread);
 		FlxG.overlap(_grpCrumb, _grpCrumb, crumbCollide);
 
-		FlxG.collide(_player, _tileWall);
-		FlxG.collide(_grpEnemy, _tileWall);
-		FlxG.collide(_grpCrumb, _tileWall);
+		FlxG.collide(_player, _maze);
+		FlxG.collide(_grpEnemy, _maze);
+		FlxG.collide(_grpCrumb, _maze);
 
 		if (_player.dropCrumb)
 		{
@@ -103,7 +86,7 @@ class PlayState extends FlxState
 				if (thisC != thatC)
 				{
 					_thatPoint = thatC.getMidpoint();
-					if (_tileWall.ray(_thisPoint, _thatPoint)) // Return false if wall is hit
+					if (_maze.ray(_thisPoint, _thatPoint)) // Return false if wall is hit
 					{
 						var _dist = _thisPoint.distanceTo(_thatPoint);
 						if (_closestDist > _dist)
@@ -120,7 +103,7 @@ class PlayState extends FlxState
 
 	private function checkEnemyVision(e:Enemy):Void
 	{
-		if (_tileWall.ray(_player.getMidpoint(), e.getMidpoint()))
+		if (_maze.ray(_player.getMidpoint(), e.getMidpoint()))
 		{
 			e.seesPlayer = true;
 			e.playerPos.copyFrom(_player.getMidpoint());
