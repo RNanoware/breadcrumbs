@@ -1,9 +1,12 @@
 package;
 
+import flixel.util.FlxColor;
+import flixel.graphics.FlxGraphic;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
+import flixel.tile.FlxTilemap;
 
 class PlayState extends FlxState
 {
@@ -12,8 +15,20 @@ class PlayState extends FlxState
 	private var _grpBread:FlxTypedGroup<Bread>;
 	private var _grpEnemy:FlxTypedGroup<Enemy>;
 	private var _grpCrumb:FlxTypedGroup<Crumb>;
+	private var _tileWall:FlxTilemap;
 
-	private var _addBread:Bool = true;
+	private var _mazeData:Array<Array<Int>> = [
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 1, 1, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+	];
 
 	override public function create():Void
 	{
@@ -31,6 +46,10 @@ class PlayState extends FlxState
 		_grpCrumb = new FlxTypedGroup<Crumb>();
 		add(_grpCrumb);
 
+		_tileWall = new FlxTilemap();
+		_tileWall.loadMapFrom2DArray(_mazeData, FlxGraphic.fromRectangle(32, 16, FlxColor.GRAY));
+		add(_tileWall);
+
 		super.create();
 	}
 
@@ -40,6 +59,10 @@ class PlayState extends FlxState
 
 		FlxG.overlap(_player, _grpBread, playerTouchBread);
 		FlxG.overlap(_grpCrumb, _grpCrumb, crumbCollide);
+
+		FlxG.collide(_player, _tileWall);
+		FlxG.collide(_grpEnemy, _tileWall);
+		FlxG.collide(_grpCrumb, _tileWall);
 
 		if (_player.dropCrumb)
 		{

@@ -34,11 +34,9 @@ class Crumb extends FlxSprite
             {
                 var _mp = getMidpoint();
                 var _destMp = destCrumb.getMidpoint();
-                var _offset = FlxPoint.get(0, -Math.min(_jumpDist, _mp.distanceTo(_destMp)));
-                _offset.rotate(FlxPoint.weak(), _mp.angleBetween(_destMp));
-                x += _offset.x;
-                y += _offset.y;
-                _offset.put();
+                velocity.x = 0;
+                velocity.y = -Math.min(_jumpDist, _mp.distanceTo(_destMp));
+                velocity.rotate(FlxPoint.weak(), _mp.angleBetween(_destMp));
             }
             _idleTmr = FlxG.random.float(0, 2);
         }
