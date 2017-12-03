@@ -40,7 +40,6 @@ class PlayState extends FlxState
 		add(_grpBread);
 
 		_grpEnemy = new FlxTypedGroup<Enemy>();
-		_grpEnemy.add(new Enemy(200, 200));
 		add(_grpEnemy);
 
 		_grpCrumb = new FlxTypedGroup<Crumb>();
@@ -71,6 +70,7 @@ class PlayState extends FlxState
 		}
 
 		_grpCrumb.forEachAlive(setClosestCrumb);
+		_grpEnemy.forEachAlive(checkEnemyVision);
 	}
 
 	private function playerTouchBread(p:Player, b:Bread)
@@ -116,5 +116,16 @@ class PlayState extends FlxState
 			});
 			thisC.destCrumb = _closestCrumb;
 		}
+	}
+
+	private function checkEnemyVision(e:Enemy):Void
+	{
+		if (_tileWall.ray(_player.getMidpoint(), e.getMidpoint()))
+		{
+			e.seesPlayer = true;
+			e.playerPos.copyFrom(_player.getMidpoint());
+		}
+		else
+			e.seesPlayer = false;
 	}
 }
