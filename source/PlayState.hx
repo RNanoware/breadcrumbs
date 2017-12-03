@@ -39,6 +39,7 @@ class PlayState extends FlxState
 		super.update(elapsed);
 
 		FlxG.overlap(_player, _grpBread, playerTouchBread);
+		FlxG.overlap(_grpCrumb, _grpCrumb, crumbCollide);
 
 		if (_player.dropCrumb)
 		{
@@ -57,16 +58,25 @@ class PlayState extends FlxState
 		}
 	}
 
+	private function crumbCollide(c1:Crumb, c2:Crumb)
+	{
+		c1.cluster(c2);
+		if (c1.size >= Crumb.MAX_SIZE)
+		{
+			_grpEnemy.add(new Enemy(c1.x, c1.y));
+			c1.kill();
+		}
+	}
+
 	private function setClosestCrumb(thisC:Crumb):Void
 	{
 		if (_grpCrumb.length > 1)
 		{
 			var _closestDist:Float = Math.POSITIVE_INFINITY;
-			var _closestPoint:FlxPoint = FlxPoint.get();
+			var _closestCrumb:Crumb = null;
 			var _thisPoint:FlxPoint = thisC.getMidpoint();
 			var _thatPoint:FlxPoint;
-			for (thatC in _grpCrumb)
-			{
+			_grpCrumb.forEachAlive(function(thatC) {
 				if (thisC != thatC)
 				{
 					_thatPoint = thatC.getMidpoint();
@@ -74,13 +84,11 @@ class PlayState extends FlxState
 					if (_closestDist > _dist)
 					{
 						_closestDist = _dist;
-						_closestPoint.copyFrom(_thatPoint);
+						_closestCrumb = thatC;
 					}
 				}
-			}
-			thisC.destPos.copyFrom(_closestPoint);
-			_closestPoint.put();
-			thisC.hasDest = true;
+			});
+			thisC.destCrumb = _closestCrumb;
 		}
 	}
 }

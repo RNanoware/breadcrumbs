@@ -4,12 +4,17 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import flixel.util.FlxGradient;
 
 class Crumb extends FlxSprite
 {
-    public var destPos(default, null):FlxPoint;
-    public var hasDest:Bool = false;
+    public static var MAX_SIZE(default, null):Int = 5;
 
+    public var destCrumb:Crumb = null;
+    public var hasDest:Bool = false;
+    public var size(default, null):Int = 1;
+
+    private static var _sizeColorGradient:Array<FlxColor>;
     // The distance that a crumb will hop on each moving update
     private var _jumpDist:Float = 4;
     private var _idleTmr:Float = 0;
@@ -17,19 +22,20 @@ class Crumb extends FlxSprite
     public function new(?X:Float=0, ?Y:Float=0)
     {
         super(X, Y);
-        makeGraphic(1, 1, FlxColor.GREEN);
-        destPos = new FlxPoint();
+        _sizeColorGradient = FlxGradient.createGradientArray(1, MAX_SIZE, [FlxColor.GREEN, FlxColor.YELLOW, FlxColor.RED]);
+        updateGraphic();
     }
 
     override public function update(elapsed:Float):Void
     {
         if (_idleTmr <= 0)
         {
-            if (hasDest)
+            if (destCrumb != null && destCrumb.alive)
             {
                 var _mp = getMidpoint();
-                var _offset = FlxPoint.get(0, -Math.min(_jumpDist, _mp.distanceTo(destPos)));
-                _offset.rotate(FlxPoint.weak(), _mp.angleBetween(destPos));
+                var _destMp = destCrumb.getMidpoint();
+                var _offset = FlxPoint.get(0, -Math.min(_jumpDist, _mp.distanceTo(_destMp)));
+                _offset.rotate(FlxPoint.weak(), _mp.angleBetween(_destMp));
                 x += _offset.x;
                 y += _offset.y;
                 _offset.put();
@@ -37,6 +43,19 @@ class Crumb extends FlxSprite
             _idleTmr = FlxG.random.float(0, 2);
         }
         _idleTmr -= elapsed;
+        updateGraphic();
         super.update(elapsed);
+    }
+
+    public function cluster(that:Crumb)
+    {
+        size = Std.int(Math.min(size + that.size, MAX_SIZE));
+        that.kill();
+        hasDest = false;
+    }
+
+    private function updateGraphic()
+    {
+        makeGraphic(size, size, _sizeColorGradient[size - 1]);
     }
 }
