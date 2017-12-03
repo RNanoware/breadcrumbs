@@ -19,6 +19,7 @@ class GameOverState extends FlxState
     public function new(bread:Int)
     {
         super();
+        _bread = bread;
     }
 
     override public function create():Void
