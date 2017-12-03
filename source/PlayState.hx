@@ -65,6 +65,7 @@ class PlayState extends FlxState
 		if (p.alive && p.exists && b.alive && b.exists)
 		{
 			b.eat();
+			_hud.updateHUD(++p.breadEaten);
 		}
 	}
 

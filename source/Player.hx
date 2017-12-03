@@ -9,6 +9,7 @@ class Player extends FlxSprite
 {
     public var speed:Float = 150;
     public var dropCrumb:Bool = false;
+    public var breadEaten:Int = 0;
 
     private var _drag:Float = 1600;
     private var _distSinceCrumb:Float = 0;
@@ -73,7 +74,7 @@ class Player extends FlxSprite
     private function checkCrumbDrop(elapsed:Float):Void
     {
         _distSinceCrumb += elapsed * velocity.distanceTo(FlxPoint.weak(0, 0));
-        if (_distSinceCrumb > 100)
+        if (breadEaten > 0 && _distSinceCrumb > 200 * Math.pow(2, -.1 * breadEaten))
         {
             _distSinceCrumb = 0;
             dropCrumb = true;

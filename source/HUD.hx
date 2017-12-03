@@ -28,4 +28,10 @@ class HUD extends FlxTypedGroup<FlxSprite>
         add(_sprBread);
         add(_txtBread);
     }
+
+    public function updateHUD(bread:Int)
+    {
+        _txtBread.text = Std.string(bread);
+        _txtBread.x = _sprBread.x - _txtBread.width - 4;
+    }
 }
