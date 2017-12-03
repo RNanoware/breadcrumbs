@@ -13,6 +13,7 @@ class PlayState extends FlxState
 	private var _grpEnemy:FlxTypedGroup<Enemy>;
 	private var _grpCrumb:FlxTypedGroup<Crumb>;
 	private var _maze:Maze;
+	private var _hud:HUD;
 
 	override public function create():Void
 	{
@@ -31,6 +32,9 @@ class PlayState extends FlxState
 
 		_grpCrumb = new FlxTypedGroup<Crumb>();
 		add(_grpCrumb);
+
+		_hud = new HUD();
+		add(_hud);
 
 		super.create();
 	}

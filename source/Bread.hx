@@ -10,13 +10,13 @@ using flixel.util.FlxSpriteUtil;
 class Bread extends FlxSprite
 {
     private var getNextPos:Void->FlxPoint;
-    private static var _radius:Int = 7;
+    public static var RADIUS(default, null):Int = 4;
 
     public function new(positionGenerator:Void->FlxPoint)
     {
         var firstPos:FlxPoint = positionGenerator();
         super(firstPos.x, firstPos.y);
-        makeGraphic(_radius * 2, _radius * 2, FlxColor.TRANSPARENT);
+        makeGraphic(RADIUS * 2, RADIUS * 2, FlxColor.TRANSPARENT);
         drawCircle(-1, -1, -1, FlxColor.LIME);
         getNextPos = positionGenerator;
     }
