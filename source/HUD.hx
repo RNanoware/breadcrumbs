@@ -27,6 +27,11 @@ class HUD extends FlxTypedGroup<FlxSprite>
         add(_sprBack);
         add(_sprBread);
         add(_txtBread);
+
+        forEach(function(spr:FlxSprite)
+        {
+            spr.scrollFactor.set(0, 0);
+        });
     }
 
     public function updateHUD(bread:Int)
