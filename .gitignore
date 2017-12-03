@@ -1,5 +1,7 @@
 # Target files
-export
+export/*
+export/**/haxe
+!export/html5
 
 # Visual Studio Code config
 .vscode
